@@ -133,6 +133,11 @@ class SynetConan(ConanFile):
         tc.variables["SYNET_GET_VERSION"] = True
         tc.variables["CMAKE_CXX_STANDARD"] = "17"
         tc.variables["CMAKE_CXX_STANDARD_REQUIRED"] = "ON"
+        compiler_executables = self.conf.get("tools.build:compiler_executables", default={})
+        if compiler_executables.get("cpp"):
+            tc.cache_variables["CMAKE_CXX_COMPILER"] = compiler_executables["cpp"]
+        if compiler_executables.get("c"):
+            tc.cache_variables["CMAKE_C_COMPILER"] = compiler_executables["c"]
 
         tc.generate()
 
