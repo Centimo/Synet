@@ -187,7 +187,7 @@ class SynetConan(ConanFile):
     def package_info(self):
         self.cpp_info.libs = ["Synet"]
         self.cpp_info.includedirs = ["include"]
-        self.cpp_info.requires = ["simd::simd"]
+        self.cpp_info.requires = ["simd::simd", "cpl::cpl"]
 
         if int(self.options.perf_level) >= 1:
             self.cpp_info.defines.append("SYNET_PERFORMANCE_STATISTIC")
