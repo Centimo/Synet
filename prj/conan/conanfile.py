@@ -197,6 +197,29 @@ class SynetConan(ConanFile):
                  dst=os.path.join(self.package_folder, "python"),
                  keep_path=False)
 
+        # Тестовые бинари
+        if str(self.options.test) != "none":
+            test_binaries = {
+                "inference_engine": ["test_inference_engine"],
+                "onnx": ["test_onnx"],
+                "performance_difference": ["test_performance_difference"],
+                "precision": ["test_precision"],
+                "quantization": ["test_quantization"],
+                "stability": ["test_stability"],
+                "optimizer": ["test_optimizer"],
+                "bf16": ["test_bf16"],
+                "multi_threads": ["test_multi_threads"],
+                "video": ["test_video"],
+                "all": [
+                    "test_inference_engine", "test_onnx", "test_performance_difference",
+                    "test_precision", "test_quantization", "test_stability",
+                    "test_optimizer", "test_bf16", "test_multi_threads", "test_video",
+                ],
+            }
+            for binary in test_binaries.get(str(self.options.test), []):
+                copy(self, binary, src=self.build_folder,
+                     dst=os.path.join(self.package_folder, "bin"), keep_path=False)
+
         rmdir(self, os.path.join(self.package_folder, "share"))
 
     def package_info(self):
