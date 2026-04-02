@@ -23,6 +23,11 @@ class SynetConan(ConanFile):
         "bf16_round_test": [True, False],     # SYNET_BF16_ROUND_TEST
         "perf_level": [0, 1, 2],             # SYNET_PERF
         "python_wrapper": [True, False],     # SYNET_PYTHON
+        "test": [
+            "none", "inference_engine", "onnx", "precision",
+            "performance_difference", "quantization", "stability",
+            "optimizer", "bf16", "multi_threads", "video", "use_samples", "all",
+        ],
     }
     default_options = {
         "shared": False,
@@ -31,7 +36,11 @@ class SynetConan(ConanFile):
         "bf16_round_test": False,
         "perf_level": 0,
         "python_wrapper": False,
+        "test": "none",
     }
+
+    _openvino_tests = ("inference_engine", "precision", "all")
+    _onnxruntime_tests = ("onnx", "all")
 
     def _repo_root(self):
         return os.path.normpath(os.path.join(self.recipe_folder, "..", ".."))
@@ -77,6 +86,11 @@ class SynetConan(ConanFile):
     def requirements(self):
         self.requires(f"simd/{self._read_simd_version()}")
         self.requires("cpl/1.0.0")
+        if str(self.options.test) in self._openvino_tests:
+            self.requires("openvino/2026.0.2", visible=False)
+        if str(self.options.test) in self._onnxruntime_tests:
+            self.requires("onnxruntime/1.23.2", visible=False)
+            self.requires("onnx/1.18.0", transitive_headers=True, visible=False)
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -128,7 +142,8 @@ class SynetConan(ConanFile):
         tc.variables["SYNET_PERF"] = int(self.options.perf_level)
         tc.variables["SYNET_PYTHON"] = self.options.python_wrapper
         tc.variables["SYNET_BF16_ROUND_TEST"] = self.options.bf16_round_test
-        tc.variables["SYNET_TEST"] = "none"
+        tc.variables["SYNET_TEST"] = str(self.options.test)
+        tc.variables["SYNET_USE_CONAN_PACKAGES"] = True
         tc.variables["SYNET_INFO"] = True
         tc.variables["SYNET_GET_VERSION"] = True
         tc.variables["CMAKE_CXX_STANDARD"] = "17"
