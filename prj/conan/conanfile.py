@@ -7,6 +7,7 @@ import os
 class SynetConan(ConanFile):
     name = "synet"
     version_file = "prj/txt/UserVersion.txt"
+    extra_files = ["3rd/Simd/prj/txt/UserVersion.txt"]
 
     # Package metadata
     description = "Synet Framework - neural network inference framework"
