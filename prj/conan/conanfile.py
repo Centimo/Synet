@@ -94,6 +94,16 @@ class SynetConan(ConanFile):
             self.requires("onnxruntime/1.23.2", visible=False)
             self.requires("onnx/1.18.0", transitive_headers=True, visible=False)
 
+    def package_id(self):
+        _requires = [
+            "simd", "cpl",
+            # conditional:
+            "openvino", "onnxruntime", "onnx",
+        ]
+        for name in _requires:
+            if name in self.info.requires:
+                self.info.requires[name].full_package_mode()
+
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
