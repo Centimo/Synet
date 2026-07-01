@@ -1,6 +1,6 @@
 [submodule "3rd/Simd"]
 	path = 3rd/Simd
-	url = https://github.com/ermig1979/Simd.git
+	url = https://github.com/Centimo/Simd.git
 	ignore = dirty
 	branch = master
 [submodule "3rd/openvino"]
