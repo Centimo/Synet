@@ -30,14 +30,13 @@ namespace Synet
 {
     struct VersionInfo
     {
-        int major, minor, release;
+        // Initialized here, not in the constructor: glibc < 2.28 defines function-like macros major() and minor()
+        // in <sys/sysmacros.h>, which <sys/types.h> includes, so "major(0)" would expand to "gnu_dev_major(0)".
+        int major = 0, minor = 0, release = 0;
         String original, date, branch, revision;
 
         VersionInfo(const String& version)
             : original(version)
-            , major(0)
-            , minor(0)
-            , release(0)
         {
             size_t beg = 0, end = 0;
             end = original.find('.', beg);
